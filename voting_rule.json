@@ -1,0 +1,12 @@
+{
+    "user":{
+        "id":"YOUR_ID",
+        "postkey":"YOUR_POSTING_KEY",
+        "weight":100
+    },
+    "rule":[
+        {"id":"tmkor",
+        "mode":"vote"}
+    ],
+    "refresh":1
+}
