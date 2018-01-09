@@ -1,4 +1,12 @@
 #-*- coding: utf-8 -*-
+from steem.steemd import Steemd
+from steem.instance import set_shared_steemd_instance
+
+steemd_nodes = [
+    'https://api.steemit.com',
+]
+set_shared_steemd_instance(Steemd(nodes=steemd_nodes))
+
 from steem.blog import Blog
 from steem import Steem
 import io
