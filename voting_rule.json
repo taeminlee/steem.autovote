@@ -6,7 +6,8 @@
     },
     "rule":[
         {"id":"tmkor",
-        "mode":"vote"}
+        "mode":"vote",
+        "delay":30}
     ],
     "refresh":1
 }

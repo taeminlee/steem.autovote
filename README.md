@@ -11,8 +11,13 @@ an example of autovoting bot for steem using steem-python library
 
 ## Execution
 
+- [edit steem-python steemd.py](https://steemit.com/kr-dev/@tmkor/steem-python-api)
 - edit voting_rule.json
 - `python autovote.py`
+
+## Screenshot
+
+
 
 ## Reference
 

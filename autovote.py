@@ -1,18 +1,11 @@
 #-*- coding: utf-8 -*-
-from steem.steemd import Steemd
-from steem.instance import set_shared_steemd_instance
-
-steemd_nodes = [
-    'https://api.steemit.com',
-]
-set_shared_steemd_instance(Steemd(nodes=steemd_nodes))
-
 from steem.blog import Blog
 from steem import Steem
 import io
 import os.path
 import json
 import time
+import datetime
 from functools import reduce
 
 def load_config():
@@ -34,11 +27,18 @@ def get_identifier(post):
 def double_vote_check(post, user):
     return len(list(filter(lambda vote:vote['voter'] == user['id'],post['active_votes']))) > 0
 
+def time_delay_check(post, rule):
+    timediff = datetime.datetime.utcnow() - post['created']
+    elapsed_minutes = timediff.seconds / 60
+    return elapsed_minutes < rule['delay']
+
 def vote(postId, voter, weight=100):
     voter['s'].commit.vote(postId, weight, voter['id'])
 
-def run_vote(userId, voter):
-    p, p_raw = get_new_post(userId)
+def run_vote(rule, voter):
+    p, p_raw = get_new_post(rule['id'])
+    if(time_delay_check(p,rule)):
+        return False
     if(double_vote_check(p,voter)):
         return False
     postId = get_identifier(p)
@@ -56,7 +56,7 @@ def run():
             mode = rule['mode']
             print("%s %s"%(mode, userId))
             if(mode == 'vote'):
-                rst = run_vote(userId, user)
+                rst = run_vote(rule, user)
                 print("%s %s Ended"%(mode, userId))
                 if rst != False:
                     print("VOTED POST : https://steemit.com/%s" % rst)
