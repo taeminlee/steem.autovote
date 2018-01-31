@@ -7,7 +7,11 @@
     "rule":[
         {"id":"tmkor",
         "mode":"vote",
-        "delay":30}
+        "delay":5,
+        "title_white":[],
+        "title_black":[],
+        "body_white":[],
+        "body_black":[]}
     ],
     "refresh":1
 }

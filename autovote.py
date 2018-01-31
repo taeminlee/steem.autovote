@@ -7,10 +7,11 @@ import json
 import time
 import datetime
 from functools import reduce
+import codecs
 
 def load_config():
     config_path = 'voting_rule.json'
-    with io.open(config_path, 'r') as fp:
+    with codecs.open(config_path, encoding="UTF-8") as fp:
         return json.load(fp)
 
 def login(user):
@@ -35,8 +36,29 @@ def time_delay_check(post, rule):
 def vote(postId, voter, weight=100):
     voter['s'].commit.vote(postId, weight, voter['id'])
 
+def get_title_body(post):
+    return post['title'], post['body']
+
+def universal(W, text):
+    if len(W) == 0:
+        return True # for whitelist check
+    return reduce(lambda x,y:x&y,map(lambda w:w in text, W))
+
+def existential(W, text):
+    if (len(W) == 0):
+        return False # for blacklist check
+    return reduce(lambda x,y:x|y,map(lambda w:w in text, W))
+
+def white_black_check(post,rule):
+    t, b = get_title_body(post)
+    white = universal(rule['title_white'],t) & universal(rule['body_white'],b)
+    black = existential(rule['title_black'],t) | existential(rule['body_black'],b)
+    return white and not black
+
 def run_vote(rule, voter):
     p, p_raw = get_new_post(rule['id'])
+    if(white_black_check(p,rule) == False):
+        return False
     if(time_delay_check(p,rule)):
         return False
     if(double_vote_check(p,voter)):
